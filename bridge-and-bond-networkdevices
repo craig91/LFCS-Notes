@@ -1,0 +1,74 @@
+Configuring Bridge and Bonding Devices
+
+Bridge and Bond means to take 2 or more network interfaces and "glue" them together under the same operating system,
+this creates a virtual network device. In one case its called a bridge and the other case its called a bond.
+
+How are they different if they both do the same thing on the surface?
+The clues are in the words bridge and bond themselves
+
+When I am bridging 2 network devices, I am doing EXACTLY what the word implies.
+I am building a bridge between network 1 and network 2
+Such a bridge would allow computers on two separate network to talk to each other as if they are part of the same network.
+
+Any network device is called a network interface in Linux.
+
+A simple bridge diagram analogy
+
+Real Life:  LAND <-----> WATER <-----> LAND
+Linux:      NETWORK1 <----> BRIDGE <----> NETWORK2
+
+In Linux networking terms, the bridge is called the "controller", and the network devices that are part of the bridge are 
+called ports.
+
+
+Bonding
+
+I can take 2 or more network devices and "bond" them together, depending on the "bond type".
+
+Here are 3 examples on this:
+
+1. It can make the connection to a network more resilient and able to keep working by providing redundancy.
+Even if a network card goes down or gets disconnected.
+
+2. It can increase network throughput. For example, if one network card supports a 1000 MB connection, two cards can 
+be combined to reach much higher speeds. It wouldn't get exactly 2000 MBs but it'll be much higher than a single card
+supports.
+
+3. It can make the connection more reliable, for example, a single network device might experience a few slowdowns, but 
+if I were to bond three network devices, I might be able to eliminate those slowdowns and increase stability. 
+
+Bonding modes
+Linux typically support 7 bonding modes
+Mode 0 to 6
+If no mode is specified, usually linux would have mode 0 selected by default aka "round robin"
+
+Mode 4 is one mode that can increase network throughput above what a single card can achieve.
+
+Mode 0 - Round Robin
+Mode 1 - Active-Backup
+Mode 2 - XOR
+Mode 3 - Broadcast
+Mode 4 - IEEE 802.3ad
+Mode 5 - Adaptive Transmit Load Balancing
+Mode 6 - Adaptive Load Balancing
+
+
+
+Mode 0 - Round Robin uses network interfaces in a sequential order for a certain amount of data
+Mode 1 - Active Backup uses a single interface, and keeps all others inactive as backups
+Mode 2 - XOR picks the interface to use based on the source and destination of the data packet. This ensures that if
+device one wants to reach device two through its bond, it will always go through the same interface.
+
+Mode 3 - Broadcast means that all data is sent through all network interfaces at once.
+Mode 4 - IEEE 802.3ad can help increase network transfer rates above what a single interface supports
+Mode 5 - Adaptive Transmit Load Balancing balances load balances outgoing traffic from the bond. That is, it will try to send 
+data from the interface that's the least "busy".
+Mode 6 - Adaptive Load Balancing tries to load balance both outgoing and incoming traffic.
+
+In the context of a bond, all network interfaces that are added to it are called "ports".
+
+Bridge - Two or more networks
+Bond - Two or more connections to a network.
+
+
+

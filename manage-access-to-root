@@ -1,0 +1,41 @@
+To login as root:
+
+sudo --login OR sudo -i
+
+logout --> logs out of root
+
+If the user does not have sudo privileges but knows the root password:
+
+su - OR su -l OR su --login --> using this method, you have to type in the root password and not your password like the command above
+
+When root is locked you can still use:
+sudo --login
+This is because the password for the current user is not locked
+But you cannot use:
+sudo -
+because that will ask for the root password
+
+If you want users to login with a password, you have 2 options:
+1st step is to verify if the root password is set. If it isn't you can do the following:
+
+sudo passwd root
+
+If a password was set in the past but it was locked for some reason you can use the following command:
+
+sudo passwd --unlock root OR sudo passwd -u root
+
+After these steps have been taken you can use the:
+ 
+su - 
+
+command and type in the root password.
+
+You can lock password based login to the root account by performing the following command:
+
+sudo passwd --lock root OR sudo passwd -l root
+
+
+
+
+
+

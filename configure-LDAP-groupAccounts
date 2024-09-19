@@ -1,0 +1,46 @@
+Commands
+
+lxd init
+
+lxc list
+
+lxc import <ldap file>
+lxc start <ldap server name>
+
+install
+sudo apt update && sudo apt install libnss-ldapd
+
+nss --> "name service switch"
+A convenient way for linux to get data about the various things from various sources
+So when a linux needs to get information on things like user accounts, groups, passwords, hostnames
+etc... it could consult the NSS to find out where to get this data from.
+
+During the install, a box will show up saying "Configuring nslcd"
+nslcd --> name service local daemon
+This is a component responsible for retrieving data from the LDAP server.
+So this is why I need to type in the ipaddress of the LDAP server, telling nslcd where to get the
+data from.
+
+
+To see all users, both defined locally and in the LDAP server, you can use this command:
+
+getent passwd
+
+getent --> short for "get entry"
+
+If you want to filter out only entries from the ldap server, Uset these flags with getent
+
+getent passwd --service ldap
+
+For group entries:
+
+getent group --service ldap
+
+Because there could be issues with users and their home directories, run the following:
+
+sudo pam-auth-update
+
+and you will be presented with a menu. Make sure to select the box that says
+"create home directory on login".
+
+sign in as another user to test 

@@ -1,0 +1,22 @@
+You can see the current users environment using the following command:
+
+printenv or env
+
+If a user wants to edit or add their own environment variable. they can edit the .basrc file.
+Setting a variable for every user on the system:
+edit the /etc/environment file. --> this is for setting an environment variable. there are more complex things we can do like having a command run every time a user logs in.
+
+We can use the /etc/profile.d directory to achieve this
+We can add a shell script here. The shell scripts that are written here don't need the shebang ("#!/bin/bash")
+
+
+Manage Template User Environment
+
+When new user accounts are created, There is one action that happens by default. All filesfrom the /etc/skel directory are copied to the new users home directory. this can be helpful when needing to create a template for the new user's environment.
+
+
+Scenario: I have a default policy that all new users need to have. what I'll do is create a README file in the etc/skel directory so when a new user is created, it will be in their home environment.
+Next = Add a user named trinity and then login with her account.
+sudo adduser trinity
+su trinity
+ls -a /home/trinity

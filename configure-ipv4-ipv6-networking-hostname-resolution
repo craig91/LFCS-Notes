@@ -1,0 +1,73 @@
+To discover almost everything about the system network configuration:
+ip link
+
+To see the ip address on the interfaces:
+ip a
+
+You can use the -c (color) option to highlight the imporant parts of the STDOUT
+ip -c a
+
+When a network interface is down. You can bring it up using the following command:
+
+sudo ip link set dev < network interface name> up
+
+To manually add an ipv4 ip address to a network interface:
+sudo ip addr add <ipv4 address/CIDR notation> dev <network interface name>
+
+To manually add an ipv6 ip address to a network interface:
+sudo ip addr add <ipv6 address/CIDR notation> dev <netowrk interface name>
+
+Note that a network interface can have multiple ip addresses.
+
+To remove an ip address from a network interface:
+sudo ip addr delete <ipv4 or 6 address/CIDR notation> dev <network interface name>
+sudo ip link set dev <network interface name> down
+
+
+Changes using the ip command are temporary. Changes are lost upon reboot
+So the ip command is usually used to test ip settings temporarily
+
+How to make the changes permanent.
+It depends on the OS. Each linux may do something different. In the past, default networking
+tools have been change alot.
+
+What Ubuntu uses currently is called "netplan"
+
+This is a setup utility that reads some config files then sends instructions to other networking 
+tools, telling them to configure netowrk settings accordingly. 
+On Ubuntu server, netplan sends instructions to the systemd network daemon called 
+systemd-network.d.
+
+To see the current netplan configuration:
+sudo netplan get
+
+dhcp4 = true means that it is making this device ask for network settings from a dhcp4 server.
+the 4 refers to ipv4 settings.
+
+A DHCP server is often used to auto configure IPs for the devices on a network.
+
+
+Netplan config files are stored in the /etc/netplan directory.
+When creating a netplan file, its common practice to prefix it with a number like so:
+99-mynetworkfile.yaml
+
+After making changes to the .yaml config file, you can test if what you did is correct by running the following command:
+sudo netplan try 
+
+
+A count down will start for 2 minutes, if you press enter, the changes will be accepted, otherwise
+the countdown will revert the changes after 2 minutes.
+If you want the count down to be shorter you can pass the timeout flag:
+sudo netplan try --timeout 30 (seconds)
+
+
+If you want to straight up apply these settings, run the following command:
+sudo netplan apply
+
+
+After you are finished, run chmod 600 on the config file to satisfy the warning after 
+the changes are implemented.
+
+
+So now if the server is rebooted, the settings will be applied automatically.
+

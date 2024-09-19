@@ -1,0 +1,73 @@
+To set user resource limits, we can edit the following file:
+/etc/secuity/limits.conf
+
+<domain>
+The domain can have usernames, groups (to set a limit for everyone in a group, put an "@" infront of the group name.
+for example:
+    <domain>
+    trinity
+    @developers --> sets limit for everyone in this group.
+    * --> sets limit for all user on the system. This will apply to every user NOT shown in this file (limits.conf) A user specific limit overrides the global * limit.
+
+<type>
+This field can take 3 different values: soft, hard,"-"
+hard limit --> cannot be overwriten by a regular user.
+soft limit --> describes the initial value for the limit when the user logs in the system.
+               If this user needs temporary need to increase this limit, they can do so.
+- --> This dash implements a hard and a soft limit. So if I have a user with a - 20, this means this user 
+      can use up to or all of the 20 processes without having to manually increase it.
+
+<item>
+This limit determines what the limit is actually for. For example:
+"nproc" --> this sets a maximum number of processes that can be open in a user's session.
+"fsize" --> sets the maximum file size that can be created in a user's session. Sizes are written in KB.
+"cpu" --> sets a limit for the cpu time in minutes. The seconds being used matters here. So not 1 minute of human time, but 1 minute of cpu time (at 100% usage)
+
+<value>
+
+
+To see the limit(s) for my current session:
+
+ulimit -a
+
+To see or DECREASE the limit of processes:
+
+ulimit -u <number of processes you want to decrease to>
+
+ex: ulimit -u 5000 --> decreases the process limit to 5000
+
+By default, a user can only lower their limits not increase them. The only exception is 
+when you wanna raise TO the hard limit or anything less than the hard limit (soft limit)
+It cannot be raised a 2nd time once you do this.
+
+
+Manage User Privileges
+
+Whoever is a part of the sudo group, is allowed to use sudo.
+A simple way of adding a user to the sudo group:
+
+sudo gpasswd -a trinity sudo
+
+A file for more fine tuned sudo control.
+sudoers file: /etc/sudoers
+
+This file defines who can use sudo and under what conditions, what commands they can run
+and so on.
+You should not edit this file directly. You can use visudo to make changes.
+This utility checks if the edits are correct to help avoid making mistkes in this file.
+
+visudo breakdown
+
+# Allow members of group sudo to execute any command
+%sudo ALL=(ALL:ALL) ALL
+
+%sudo --> user group. here we define who this policy is for.
+
+ALL (1) --> The Host. Here I can specify that these rules apply if our server's hostname 
+or IP address has a specific value.
+
+ALL (2) --> run-as-user field. Here, we can type in a list of usernames. 
+ALL (3) --> run-as-group field.
+
+ALL (4) --> List of commands that can be run with sudo
+

@@ -1,0 +1,116 @@
+ufw - Uncomplicated firewall
+
+Check ufw status
+
+sudo ufw status
+
+When ufw is active, it will by default block all incoming traffic. 
+This is called a "whitelist" approach, this means that everything is not allowed unless
+specified in the whitelist.
+
+To enable ssh traffic to come through:
+
+sudo ufw allow 22 --> allows port 22 via tcp and udp protocols
+
+You can be specific to which protocl you want. For example:
+
+sudo ufw allow 22/tcp --> I am specfically allowing ssh using tcp only
+
+enable ufw
+
+sudo ufw enable 
+
+get status verbose:
+
+sudo ufw status verbose
+
+Look at active tcp connections:
+
+ss -tn
+
+to allow from a specific ip address:
+
+sudo ufw allow from <ip of machine you are ssh'ing from > to any port 22
+any means that if the server you are ssh'ing into has multiple NICs with multiple ip's
+then your ip address will be allowed in regardless. If you want to specify a specific NIC
+then replace any with the ip address of that NIC.
+
+ufw is run synchronously, so from top to bottom. Make sure to put ALL deny rules first:
+
+sudo ufw status numbered --> list the the rules that are executed in order.
+
+You can delete rules via its index number (when looking at the numbered output)
+
+sudo ufw delete <index number>
+
+Another way to delete a rule, by deleting the rule name rather then the index:
+
+sudo ufw delete allow 22
+
+You can also specify a range of ip address rather than a singular one:
+For example, i wanna speficfy a range of IPs from 10.0.0.1 - 10.0.0.255
+Make sure to specify the CIDR notation
+
+sudo ufw allow from 10.0.0.1/24 to any port 22
+
+All IPs in this CIDR range will be able to connect via port 22
+
+
+Now lets say that I want to have every IP in the range described above to be able to connect
+to ANY port on the server, All I need to do is omit the any port part of the command
+
+sudo ufw allow from 10.0.0.1/24
+
+Lets say I want to deny from 1 specific IP from this CIDR range, I can use a deny rule.
+In this example, I'll deny the ip 10.0.0.34:
+
+sudo ufw deny from 10.0.0.34
+
+Be sure to put this deny rule at the top of the rule list. When you delete a rule, the rule
+right after it will take its place, for example when rule no.1 is deleted, rule no.2 will now become
+rule no.1. Be sure to pay attention to that.
+
+To have a rule at a specific part of the rules list, you have to use the insert command
+to add it. For example, I wanna make sure my deny rule is at the top of the list. I can do 
+it like this:
+
+sudo ufw insert <position as number> deny from 10.0.0.34
+sudo ufw insert 2 deny from 10.0.0.34
+
+A server can have more than one NIC for different purposes. You can design rules for one 
+to log incoming and outgoing traffic to and from the internet while the other NIC can be used
+to process traffic in the internal network.
+
+In this example, I will prevent my NIC from being able to contact google.
+
+To apply a rule to a specific NIC, you need to have the name of the NIC.
+
+ip link
+or
+ip -c a
+
+Once you identify the NIC, you can confirm if you can ping the dns that you want to block:
+
+ping -c 4 8.8.8.8
+
+Now lets block outgoing traffic to 8.8.8.8:
+
+sudo ufw deny out on <NAME OF NIC> to 8.8.8.8
+out --> specifies outgoing traffic
+
+
+Now if you try to ping to google.com, it will not work.
+
+
+Lets try a complex UFW rule:
+
+sudo ufw allow in enp0s3 from 10.0.0.192 to 10.0.0.100 proto tcp (incoming)
+sudo ufw allow out enp0s3 from 10.0.0.100 to 10.0.0.192 proto tcp (outgoing)
+
+lets translate
+
+1. allow incoming traffic on my NIC enp0s3 from the ip address 10.0.0.192 to my NIC's ip address 10.0.0.100 via the tcp protocol
+2. allow outgoing traffic from my NIC 10.0.0.100 to the other computer 10.0.0.192 via the tcp protocol (the proto flag)
+
+
+

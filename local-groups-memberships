@@ -1,0 +1,32 @@
+Practical example. Add a user named john and then create a groups called "developers" and then add john to that group.
+
+sudo add user john
+sudo groupadd developers
+
+sudo gpasswd --add john developers OR sudo gpasswd -a john developers
+to verify:
+groups john
+
+** in the STDOUT of the groups <user> command, the name after the colon is the "primary" or the "login" group. The rest are secondary or supplementary groups **
+
+To remove a user from a group:
+sudo gpasswd --delete john developers OR sudo gpasswd -d john developers
+
+Change the primary group of a user ** -g and -G are different **
+sudo usermod -g developers john or sudo usermod --gid developers john
+the -G flag targets the secondary group for a user.
+
+rename a group:
+sudo groupmod --new-name programmers developers OR sudo groupmod -n programmers developers
+
+
+
+** When a new group is added to the system, the current login session will not see it until you either sign out and sign in or reboot the machine. **
+
+
+
+delete a group
+sudo groupdel programmers
+You cant delete this group if this group is a primary one for another user.
+
+
